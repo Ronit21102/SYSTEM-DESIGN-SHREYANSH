@@ -787,4 +787,121 @@ orderService.placeOrder();
 🔹 **Easier to replace components (e.g., switching databases, payment gateways, logging systems, etc.)**.  
 🔹 Works well with **Dependency Injection (DI) and Inversion of Control (IoC)**.  
 
-Would you like a **real-world example (e.g., Payment Processing, Logging, or Authentication)?** 🚀
+###Strategy design pattern
+The **Strategy Design Pattern** is used when we need to define a **family of algorithms (or behaviors)**, encapsulate them, and make them interchangeable at runtime. It allows objects to **choose the appropriate behavior dynamically** without modifying their code.
+
+---
+
+### **✅ How Does Strategy Pattern Fit Here?**
+If **two child classes need the same property or behavior** but the **parent class does not have it**, you can use the **Strategy Pattern** by **encapsulating the behavior in a separate class** and injecting it dynamically.
+
+---
+
+### **✅ Strategy Pattern Example for This Scenario (Java)**
+Let’s say `Electronics` and `Furniture` both need a **discount behavior**, but the `Product` class doesn’t have it.
+
+#### **🔹 Step 1: Create a Strategy Interface**
+```java
+interface DiscountStrategy {
+    double applyDiscount(double price);
+}
+```
+
+---
+
+#### **🔹 Step 2: Implement Different Strategies**
+```java
+class ElectronicsDiscount implements DiscountStrategy {
+    public double applyDiscount(double price) {
+        return price * 0.1; // 10% discount
+    }
+}
+
+class FurnitureDiscount implements DiscountStrategy {
+    public double applyDiscount(double price) {
+        return price * 0.2; // 20% discount
+    }
+}
+```
+
+---
+
+#### **🔹 Step 3: Use Strategy in the Context (Product)**
+```java
+class Product {
+    String name;
+    double price;
+    private DiscountStrategy discountStrategy; // Strategy Pattern
+
+    public Product(String name, double price, DiscountStrategy discountStrategy) {
+        this.name = name;
+        this.price = price;
+        this.discountStrategy = discountStrategy;
+    }
+
+    public double getFinalPrice() {
+        return price - discountStrategy.applyDiscount(price);
+    }
+}
+```
+
+---
+
+#### **🔹 Step 4: Use Strategy Pattern in Main Method**
+```java
+public class StrategyPatternExample {
+    public static void main(String[] args) {
+        Product laptop = new Product("Laptop", 1000, new ElectronicsDiscount());
+        Product sofa = new Product("Sofa", 2000, new FurnitureDiscount());
+
+        System.out.println("Laptop Final Price: $" + laptop.getFinalPrice());
+        System.out.println("Sofa Final Price: $" + sofa.getFinalPrice());
+    }
+}
+```
+
+**🛠 Output:**  
+```
+Laptop Final Price: $900.0  
+Sofa Final Price: $1600.0  
+```
+
+---
+
+### **✅ Strategy Pattern in JavaScript**
+```js
+// Step 1: Define strategies
+const electronicsDiscount = (price) => price * 0.1;
+const furnitureDiscount = (price) => price * 0.2;
+
+// Step 2: Product class using Strategy
+class Product {
+  constructor(name, price, discountStrategy) {
+    this.name = name;
+    this.price = price;
+    this.discountStrategy = discountStrategy;
+  }
+
+  getFinalPrice() {
+    return this.price - this.discountStrategy(this.price);
+  }
+}
+
+// Step 3: Using Strategy Pattern
+const laptop = new Product("Laptop", 1000, electronicsDiscount);
+const sofa = new Product("Sofa", 2000, furnitureDiscount);
+
+console.log("Laptop Final Price:", laptop.getFinalPrice()); // 900
+console.log("Sofa Final Price:", sofa.getFinalPrice()); // 1600
+```
+
+---
+
+### **✔ Why Use Strategy Pattern?**
+| **Scenario** | **Without Strategy** | **With Strategy** |
+|-------------|-----------------|----------------|
+| Adding new behavior | Modify the base class | Just add a new strategy |
+| Code structure | Lots of `if-else` in `Product` class | Clean, reusable, and scalable |
+| Flexibility | Hard to extend new discounts | Easy to swap and add behaviors |
+
+Would you like an **example with dynamic strategy switching**? 🚀
